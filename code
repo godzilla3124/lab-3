@@ -1,0 +1,135 @@
+#include <conio.h>
+#include <stdio.h>
+#include <math.h>
+#include <time.h>
+
+double f(double x);
+unsigned int var (void);
+double method_hord(double x1, double x2, double eps, unsigned int debug );
+double dihot(double x1, double x2, double eps , unsigned int debug);
+
+int main()
+{
+    double eps=0.0001;
+    double x1,x2,root;
+    unsigned int num_var;
+    unsigned int debug=1;
+
+
+    num_var = var();
+
+    if (num_var==1){
+
+        root = method_hord(x1, x2, eps,debug);
+
+        printf("\nx=%lf   f(x)=%lf", root, f(root));
+    }
+
+    else if (num_var==2){
+
+        root = dihot(x1, x2, eps, debug);
+
+        printf("\nx=%lf   f(x)=%lf", root, f(root));
+    }
+
+    return 0;
+}
+
+unsigned int var(void){
+
+    unsigned int temp;
+
+    printf("\n\n Your method? \n1-Method hord \n2-Dihotomie \n");
+    scanf("%u", &temp);
+
+    while ( temp<1 || temp>2){
+        printf("\n!!!! Invalid data. Method: 1 or 2: ");
+        scanf("%u", &temp);
+    }
+}
+
+ double f(double x)
+ {
+     return 2*pow(x-4,3)+2*x;
+ }
+
+
+
+double method_hord(double x1, double x2, double eps, unsigned int debug)
+{
+    int n=1;
+    double xi;
+    clock_t start, stop;
+    unsigned long t;
+
+
+ do{
+       system("cls");
+       printf("x1=");
+       scanf("%lf", &x1);
+       printf("x2=");
+       scanf("%lf", &x2);
+    }while( f(x1) * f(x2) < 0   ); //( ( f(x1)<0 && f(x2)>0 ) || ( f(x1)>0 && f(x2)<0 ) )
+
+
+       start = clock ();
+
+    do{
+       xi = (f(x2)*x1-f(x1)*x2) / ( f(x2)-f(x1) );
+
+       if ( f(xi)*f(x1) > 0 )
+            x1 = xi;
+       else
+            x2 = xi;
+
+        stop = clock();
+
+            if(debug == 1)
+               printf("\n%d  %lf    %lf", n, xi, f(xi));
+
+       n++;
+
+    }while( fabs(f(xi)) > eps );
+    printf("\n\nduration = %f seconds", (double)(stop - start) / CLOCKS_PER_SEC);
+    return xi;
+}
+
+
+ double dihot(double x1, double x2, double eps, unsigned int debug )
+ {
+    int n=1;
+    double xi;
+    clock_t start1, stop1;
+    unsigned long t;
+
+do{
+        system("cls");
+        printf("x1=");
+        scanf("%lf", &x1);
+        printf("x2=");
+        scanf("%lf", &x2);
+    }while( f(x1) > 0 || f(x2) < 0 );
+
+        start1 = clock ();
+    do{
+        xi=(x2+x1)/2;
+        if (f(xi)>0)
+            x2=xi;
+
+        else
+            x1=xi;
+
+        stop1 = clock();
+
+            if(debug == 1)
+               printf("\n%d  %lf    %lf", n, xi, f(xi));
+
+        n++;
+
+    }while( fabs(f(xi)) > eps );
+
+        printf("\n\nduration = %f seconds", (double)(stop1 - start1) / CLOCKS_PER_SEC);
+
+     return xi;
+
+ }
